@@ -8,7 +8,7 @@ If you're a meticulous note taker, expending the time and effort to format and s
 
 This system provides a single source of truth that is easily accessible from any device connected to the internet. It can also be easily hosted locally (with a simple PHP server) to maintain complete privacy and security. Foregoing the server completely and integrating the notes into one monolithic html file is yet another possibility.
 
-### Pros
+## Pros
 * Private. Client-side encryption (AES) means you can host your files anywhere with confidence.
 * No server required. This can be hosted locally with a basic php server.
 * Self-custody. No ads, no tracking, no third parties, no compilations, no builds.
@@ -21,7 +21,7 @@ This system provides a single source of truth that is easily accessible from any
 * Keyboard accessible with tabbed navigation.
 * Super lightweight.
 
-### Cons
+## Cons
 * Need to be an organized and meticulous note taker.
 * You must completely trust whoever has access to this site. It would be security nightmare otherwise.
 * Knowledge of html required.
@@ -29,10 +29,15 @@ This system provides a single source of truth that is easily accessible from any
 * Using a code editor (IDE) is the most powerful experience.
 * Once files are encrypted, the only reasonable way to edit them is through the browser.
 
+### Example
+https://example.html-notes.app/
+
+Encryption disabled for ease of use. Saving notes disabled for security.
+
 ### Important
-#### A fair amount of traditional front-end web development knowledge and work is required to set up. However, once this is done, the maintenance is elementary and updating notes can be done from the browser.
-#### Encryption is using CryptoJS and temporarily storing the passphrase in the browser session storage. This is vulnerable to XSS attacks but is fairly secure otherwise. The main reason for the encryption is to prevent the web-host from snooping. True secrecy would require more.
-#### A passcode cannot be changed after it is used. However, you could copy and paste the unencrypted code back into your files and start over. Using more than one passcode to encrypt data will break the site.
+* A fair amount of traditional front-end web development knowledge and work is required to set up. However, once this is done, the maintenance is elementary and updating notes can be done from the browser.
+* Encryption is using CryptoJS and temporarily storing the passphrase in the browser session storage. This is vulnerable to XSS attacks but is fairly secure otherwise. The main reason for the encryption is to prevent the web-host from snooping. True secrecy would require more.
+* A passcode cannot be changed after it is used. However, you could copy and paste the unencrypted code back into your files and start over. Using more than one passcode to encrypt data will break the site.
 
 ### Basic Anatomy
 
@@ -62,7 +67,7 @@ Each individual note (category) uses the following HTML structure.
 A single note/file can contain multiple sections where the content is stored. The first section is a list of bookmarks (my preference), followed by any number of additional sections.
 
 ### Config File
-
+    const useEncryption = true;
     const notesDirectory = "notes/";
     const notes = [
         { "id" : "Groceries", "dir" : "Health/Nutrition/groceries.html" },
@@ -75,8 +80,11 @@ This config defines the containers for each category of notes based on their dir
 
 The id of each category will be used for the name of each respective note category. Hence, the capitalization. The same is true for the directories.
 
-
 Once the index file has loaded, the site will check for a locally stored passphrase. If one is not found, a prompt will persist until one is entered. Javascript will decrypt any encrypted sections and the site will be ready.
+
+Unencrypted notes will have a pink background when useEncryption is enabled. Edit the note from the browser and save to encrypt it. The passphrase in session storage is used to encrypt.
+
+Why are the notes being added to localStorage? Experimentation with offline use.
 
 ### What inspired this specific implementation?
 

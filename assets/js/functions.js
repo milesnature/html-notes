@@ -146,7 +146,9 @@ const handleModalEvents = ( e ) => {
                         storeNote( id, textareaValueEncrypted );
                         document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = decrypt( getStoredNote( id ) );
                         document.getElementById( refreshId ).open = true;
-                        document.querySelector( '#' + refreshId ).classList.remove('not-encrypted');
+                        if ( useEncryption ) {
+                            document.querySelector('#' + refreshId).classList.remove('not-encrypted');
+                        }
                         closeModal();
                     })
                     .catch( error => { console.error( 'saveText', { error } ) });
@@ -482,7 +484,9 @@ const insertNote = ( note ) => {
                 }
             } else {
                 fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ).innerHTML = storedNote;
-                fragmentNotes.querySelector( '#' + note.id ).classList.add('not-encrypted');
+                if ( useEncryption ) {
+                    fragmentNotes.querySelector('#' + note.id).classList.add('not-encrypted');
+                }
             }
         } else {
             console.error( 'insertNote', { note } );
@@ -669,7 +673,7 @@ const deselectAll = ( section ) => {
 
 setupMainEvents();
 setupNavbarControllerEvents();
-if ( !getPassphrase() ) {
+if ( useEncryption && !getPassphrase() ) {
     launchPassphraseModal();
 } else {
     importStoreInsertAllNotes();
