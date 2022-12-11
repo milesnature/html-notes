@@ -8,52 +8,6 @@ const copyToClipboard = ( snippet ) => {
 };
 
 
-// NOTES OBJECT
-
-const notes = [
-    { "id" : "Bicycle",       "dir" : "bicycle.html" },
-    { "id" : "Camping",       "dir" : "camping.html" },
-    { "id" : "Car",           "dir" : "car.html" },
-    { "id" : "Cybersecurity", "dir" : "Computers/cybersecurity.html" },
-    { "id" : "CSS",           "dir" : "Computers/Development/Languages/css.html" },
-    { "id" : "HTML",          "dir" : "Computers/Development/Languages/html.html" },
-    { "id" : "Java",          "dir" : "Computers/Development/Languages/java.html" },
-    { "id" : "Javascript",    "dir" : "Computers/Development/Languages/javascript.html" },
-    { "id" : "Node",          "dir" : "Computers/Development/Languages/node.html" },
-    { "id" : "PHP",           "dir" : "Computers/Development/Languages/php.html" },
-    { "id" : "Python",        "dir" : "Computers/Development/Languages/python.html" },
-    { "id" : "RUST",          "dir" : "Computers/Development/Languages/rust.html" },
-    { "id" : "Reference",     "dir" : "Computers/Development/reference.html" },
-    { "id" : "Sites",         "dir" : "Computers/Development/sites.html" },
-    { "id" : "Snippets",      "dir" : "Computers/Development/snippets.html" },
-    { "id" : "Sublime",       "dir" : "Computers/Development/sublime.html" },
-    { "id" : "Tools",         "dir" : "Computers/Development/tools.html" },
-    { "id" : "Install-macOS", "dir" : "Computers/install-macos.html" },
-    { "id" : "Fedora",        "dir" : "Computers/Linux/fedora.html" },
-    { "id" : "Manjaro",       "dir" : "Computers/Linux/manjaro.html" },
-    { "id" : "R-Pi",          "dir" : "Computers/Linux/r-pi.html" },
-    { "id" : "Server",        "dir" : "Computers/Linux/server.html" },
-    { "id" : "Setup",         "dir" : "Computers/Linux/setup.html" },
-    { "id" : "Storage",       "dir" : "Computers/storage.html" },
-    { "id" : "Terminal",      "dir" : "Computers/terminal.html" },
-    { "id" : "Finance",       "dir" : "finance.html" },
-    { "id" : "Air",           "dir" : "Health/air.html" },
-    { "id" : "Providers",     "dir" : "Health/providers.html" },
-    { "id" : "Status",        "dir" : "Health/status.html" },
-    { "id" : "Groceries",     "dir" : "Health/Nutrition/groceries.html" },
-    { "id" : "Information",   "dir" : "Health/Nutrition/information.html" },
-    { "id" : "Recipies",      "dir" : "Health/Nutrition/recipies.html" },
-    { "id" : "Restaurants",   "dir" : "Health/Nutrition/restaurants.html" },
-    { "id" : "House",         "dir" : "house.html" },
-    { "id" : "Music",         "dir" : "music.html" },
-    { "id" : "News",          "dir" : "news.html" },
-    { "id" : "Photography",   "dir" : "photography.html" },
-    { "id" : "Radio",         "dir" : "radio.html" },
-    { "id" : "Security",      "dir" : "security.html" },
-    { "id" : "To-Do",         "dir" : "to-do.html" }
-]
-
-
 // STORAGE
 
 const getStoredChecklistLength = ( key ) => {
@@ -352,7 +306,7 @@ const handleMainTarget = ( e ) => {
             e.stopPropagation();
             title = btn.title;
             id    = ( target.closest('details') ) ? target.closest('details').id : '';
-            dir   = 'notes/personal/' + notes.filter( ( note ) => { return note.id === id } )[0].dir;
+            dir   = notesDirectory + notes.filter( ( note ) => { return note.id === id } )[0].dir;
             // Pull from storage be default?
             // Check whether storage or server is newer?
             getText( dir )
@@ -565,7 +519,7 @@ const importStoreInsertAllNotes = () => {
     });
     notes.forEach(( note ) => {
         // Get each note individually and store its contents.
-        getText('notes/personal/' + note.dir)
+        getText(notesDirectory + note.dir)
             .then(data => {
                 if ( decryptionFailed === false ) {
                     storeNote(note.id, data.content);

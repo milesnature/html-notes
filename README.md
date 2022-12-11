@@ -1,12 +1,12 @@
 # HTML Notes
 
-HTML Notes is an incredibly lightweight design system written in HTML, CSS, Javascript, and PHP. The primary goal of this system is to neatly organize an entire collection of notes into a single page.
+HTML Notes is a lightweight design system written in HTML, CSS, Javascript, with a splash of PHP. The primary goal of this system is to neatly organize an entire collection of notes into a single page.
 
-It favors plain text files, self-custody, client-side encryption, and freedom from proprietary file formats (and applications) that lock you into closed ecosystems.
+It favors plain text files, self-custody, client-side encryption, freedom from proprietary file formats and closed ecosystems.
 
 If you're a meticulous note taker, expending the time and effort to format and style your notes, **"You may as well be using HTML and CSS to do it!"**
 
-This system provides a single source of truth that is easily accessible from any device connected to the internet. It can also be easily hosted locally (with a simple PHP server) to maintain complete privacy and security.
+This system provides a single source of truth that is easily accessible from any device connected to the internet. It can also be easily hosted locally (with a simple PHP server) to maintain complete privacy and security. Foregoing the server completely and integrating the notes into one monolithic html file is yet another possibility.
 
 ### Pros
 * Private. Client-side encryption (AES) means you can host your files anywhere with confidence.
@@ -19,7 +19,7 @@ This system provides a single source of truth that is easily accessible from any
 * Edit notes directly in the browser or in your favorite text editor.
 * Designed for mobile.
 * Keyboard accessible with tabbed navigation.
-* Super lightweight. The entire site, including 60+ notes is ~ 400 kB.
+* Super lightweight.
 
 ### Cons
 * Need to be an organized and meticulous note taker.
@@ -30,56 +30,58 @@ This system provides a single source of truth that is easily accessible from any
 * Once files are encrypted, the only reasonable way to edit them is through the browser.
 
 ### Important
-
-#### THIS SITE IS A HACKERS DREAM! PASSWORD PROTECT IT! ONLY ALLOW PEOPLE YOU TRUST IMPLICITLY TO ACCESS IT!
-#### Encryption is using CryptoJS and temporarily storing the passphrase in the browser session storage. This is vulnerable to XSS attacks but is otherwise fairly secure. The main reason for the encryption is to prevent the web-host from snooping. True secrecy will require more.
-#### A passcode cannot be changed after it is used. However, you could copy and paste the unencrypted code back into your files and start over. Using more than one passcode to encrypt data will break the site.
 #### A fair amount of traditional front-end web development knowledge and work is required to set up. However, once this is done, the maintenance is elementary and updating notes can be done from the browser.
-
-### What inspired this specific implementation?
-
-The mantra is simplicity.
-
-I am toying with the notion of a SFA (Single File Application). A lightweight, highly performant, single purpose variant of the SPA. No frameworks, no dependencies, no bloat.
-
-Simplicity makes the app easier to use and to maintain.
-
-"What about all of these files?", you may ask. They are split out to make life easier (see Basic Anatomy). However, this page could easily be converted into a single, static html file including all the content, CSS, and Javascript (inline).
-
-
-This project is about developing a solution to all of my concerns with current Notes applications and related systems of storage.
-
-It begs the question, "What is a note?"
-* Documentation
-* Bookmark
-* Photo
-* Reminder
-* Snippet
-* Todo list
-* Recipe
-
-They all are.
+#### Encryption is using CryptoJS and temporarily storing the passphrase in the browser session storage. This is vulnerable to XSS attacks but is fairly secure otherwise. The main reason for the encryption is to prevent the web-host from snooping. True secrecy would require more.
+#### A passcode cannot be changed after it is used. However, you could copy and paste the unencrypted code back into your files and start over. Using more than one passcode to encrypt data will break the site.
 
 ### Basic Anatomy
 
 Each individual note (category) uses the following HTML structure.
 
-	<details id="category">
-	    <summary>Category<span></span> <button data-file-directory="notes/category.php" title="Edit Category" id="write" type="button"></button></summary>
-	    <div class="grid-sections">
-	        <section class="bookmarks">
-	            <ul>
-	                <li><a href="https://bookmark.com" target="_blank" rel="noreferrer">bookmark</a></li>
-	            </ul>
-	        </section>
-	    </div>
-	</details>
+    <details id="aNote" class="notes__details">
+      <summary><strong>A Note</strong>
+        <button title="Edit A Note" type="button"><span>Edit</span></button>
+      </summary>
+      <div class="notes__sections">
+        <section class="bkm__section">
+          <ul>
+            <li><a href="https://link.com" noreferrer="">Bookmark</a></li>
+          </ul>
+        </section>
+        <section class="note__section">
+          <h3>Generic note section</h3>
+          <ul>
+              <li>Item 1</li>
+              <li>Item 2</li>
+              <li>Item 3</li>
+          </ul>
+        </section>
+      </div>
+    </details>
 
-A single note can contain multiple sections where the content is stored. The first section is a list of bookmarks (my preference), followed by any number of additional sections. Multiple sections can be in a different order or be omitted entirely.
+A single note/file can contain multiple sections where the content is stored. The first section is a list of bookmarks (my preference), followed by any number of additional sections.
 
-The sections (contents) are saved in a php file named by note (category). These are encrypted on the first save from the browser. A light pink background means a section **has not** been encrypted yet.
+### Config File
 
-	<div class="grid-sections"><?php include 'notes/category.php'; ?></div>
+    const notesDirectory = "notes/";
+    const notes = [
+        { "id" : "Groceries", "dir" : "Health/Nutrition/groceries.html" },
+        { "id" : "Recipies",  "dir" : "Health/Nutrition/recipies.html" },
+        { "id" : "News",      "dir" : "news.html" },
+        { "id" : "To-Do",     "dir" : "to-do.html" }
+    ];
 
-Once the index file has loaded along with the respective php includes, the site will check for a locally stored passphrase. If one is not found, a prompt will persist until one is entered. Javascript will decrypt any encrypted sections and the site will be ready.
+This config defines the containers for each category of notes based on their directory structure.
 
+The id of each category will be used for the name of each respective note category. Hence, the capitalization. The same is true for the directories.
+
+
+Once the index file has loaded, the site will check for a locally stored passphrase. If one is not found, a prompt will persist until one is entered. Javascript will decrypt any encrypted sections and the site will be ready.
+
+### What inspired this specific implementation?
+
+Simplicity is divine.
+
+I am toying with the notion of a SFA (Single File Application). A lightweight, highly performant, single purpose variant of the SPA. No frameworks, no dependencies, no bloat.
+
+"What about all of these files?", you may ask. They are split out to make life easier (see Basic Anatomy). However, this page could easily be converted into a single, static html file including all the content, CSS, and Javascript (inline).
