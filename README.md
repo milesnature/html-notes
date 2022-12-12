@@ -2,11 +2,11 @@
 
 HTML Notes is a lightweight design system written in HTML, CSS, Javascript, with a splash of PHP. The primary goal of this system is to neatly organize an entire collection of notes into a single page.
 
-It favors plain text files, self-custody, client-side encryption, freedom from proprietary file formats and closed ecosystems.
+It favors plain text files, self-custody, client-side encryption, and freedom from proprietary file formats (closed ecosystems).
 
-If you're a meticulous note taker, expending the time and effort to format and style your notes, **"You may as well be using HTML and CSS to do it!"**
+If you're a meticulous note taker, expending the time and effort to format and style your notes — *you may as well be using HTML and CSS to do it!*
 
-This system provides a single source of truth that is easily accessible from any device connected to the internet. It can also be easily hosted locally (with a simple PHP server) to maintain complete privacy and security. Foregoing the server completely and integrating the notes into one monolithic html file is yet another possibility.
+This system provides a single source of truth that is easily accessible from any device connected to the internet. Increase privacy and security by hosting it locally, or by hard coding everything into one single html file.
 
 ## Pros
 * Private. Client-side encryption (AES) means you can host your files anywhere with confidence.
@@ -15,7 +15,7 @@ This system provides a single source of truth that is easily accessible from any
 * No database. Uses plain text files.
 * Lightening fast load times.
 * Search is instantaneous because all the data is on a single page.
-* Keep all your notes in one place. Prevent the spread / duplication of files across devices, applications, and directories.
+* Keep all your notes in one place. Prevent the spread/duplication of files across devices, applications, and directories.
 * Edit notes directly in the browser or in your favorite text editor.
 * Designed for mobile.
 * Keyboard accessible with tabbed navigation.
@@ -23,7 +23,7 @@ This system provides a single source of truth that is easily accessible from any
 
 ## Cons
 * Need to be an organized and meticulous note taker.
-* You must completely trust whoever has access to this site. It would be security nightmare otherwise.
+* You must completely trust whoever has access to this site. It would be a security nightmare otherwise.
 * Knowledge of html required.
 * Adding new sections and files is still a manual process.
 * Using a code editor (IDE) is the most powerful experience.
