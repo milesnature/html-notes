@@ -23,7 +23,8 @@
             }
         }
     }
-    // Unencrypted files may render html instead of displaying the tags. Encrypt the file before entering html entities or use textarea tags to display html tags.
+    // Unencrypted files may render html instead of displaying the tags.
+    // Encrypt the file before entering html entities or use textarea tags to display html tags.
 
     /**
      * @throws Exception
