@@ -367,7 +367,7 @@ const handleMainTarget = ( e ) => {
 
 const navbarController   = document.querySelector('.nav__ctrl');
 const getDetailsArray    = () => { return Array.from( document.getElementsByTagName( 'details' ) ) };
-const detailsState       = ( s ) => { getDetailsArray().forEach( ( item, index ) => { item.open = ( s === 'expand' ) } ); }
+const detailsState       = ( s ) => { getDetailsArray().forEach( ( item) => { item.open = ( s === 'expand' ) } ); }
 const updateButtonAction = ( action ) => {
     const navbarButton = navbarController.querySelector('.nav__ctrl-button');
     switch ( action ) {
