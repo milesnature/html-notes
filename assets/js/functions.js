@@ -536,7 +536,7 @@ const importStoreInsertAllNotes = () => {
                 downloadProgress(note);
             })
             .catch(error => {
-                console.error('getText', {error})
+                console.error('getText', { error, 'dir' : notesDirectory + note.dir } )
             });
     });
 };
