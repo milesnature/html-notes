@@ -111,6 +111,7 @@ const closeModal = ( which ) => {
 const handlePassphrase = ( value ) => {
     if ( value ) {
         setPassphrase( value );
+        closePassphraseModal();
         importStoreInsertAllNotes();
     }
 };
@@ -504,7 +505,6 @@ const downloadProgress = () => {
     if ( downloadTally === notes.length ) {
         if ( decryptionFailed === false ) {
             mainNotes.appendChild( fragmentNotes );
-
             document.querySelector('.nav__ctrl').appendChild(templateNavController.content.cloneNode(true));
             closeProgressModal();
             initChecklist('Groceries');
@@ -516,21 +516,14 @@ const importStoreInsertAllNotes = () => {
     decryptionFailed = false;
     downloadTally    = 0;
     clearMainNotes();
-    closePassphraseModal();
     launchProgressModal();
     notes.forEach(( note ) => {
         constructDetails( note );
-    });
-    notes.forEach(( note ) => {
         // Get each note individually and store its contents.
         getText(notesDirectory + note.dir)
             .then(data => {
                 if ( decryptionFailed === false ) {
                     storeNote(note.id, data.content);
-                }
-            })
-            .then(() => {
-                if ( decryptionFailed === false ) {
                     insertNote(note);
                 }
                 downloadProgress(note);
