@@ -112,7 +112,8 @@ const handlePassphrase = ( value ) => {
     if ( value ) {
         setPassphrase( value );
         closePassphraseModal();
-        importStoreInsertAllNotes();
+        decryptAllNotes();
+        appendNotesToMain();
     }
 };
 const handleModalEvents = ( e ) => {
@@ -420,6 +421,44 @@ const setupNavbarControllerEvents = () => {
 };
 
 
+// ASYNC
+
+async function getText( dir ) {
+    const response = await fetch( 'edit-note.php' + '?url=' + dir );
+    return await response.json();
+}
+async function saveText( data ) {
+    return await fetch('edit-note.php', {method: 'POST', body: data});
+}
+
+
+// ENCRYPTION
+
+const encrypt = ( data ) => {
+    let encryptedData = "";
+    try {
+        encryptedData = CryptoJS.AES.encrypt( data, getPassphrase() );
+    }
+    catch( e ) {
+        console.error( 'Encrypt', { e } );
+    }
+    return encryptedData ;
+};
+const decrypt = ( data ) => {
+    let decryptedData = "";
+    try {
+        decryptedData = CryptoJS.AES.decrypt( data, getPassphrase() ).toString( CryptoJS.enc.Utf8 );
+    }
+    catch( e ) {
+        console.error( 'Decrypt', { e } );
+    }
+    return decryptedData;
+};
+const isEncrypted = ( data ) => {
+    return ( data.substring(0,3) === 'U2F' );
+};
+
+
 // NOTES
 
 const mainNotes             = document.querySelector('main.notes');
@@ -429,6 +468,7 @@ let decryptionFailed        = false;
 let downloadTally           = 0;
 const clearMainNotes = () => {
     mainNotes.innerHTML = '';
+    document.querySelector('.nav__ctrl').innerHTML = '';
 };
 const getDetailsFragment = ( id, directory ) => {
     const templateNoteDetails = document.querySelector('#templateNoteDetails');
@@ -470,31 +510,50 @@ const constructDetails = ( note ) => {
 };
 const insertNote = ( note ) => {
     try {
-        if ( note && note.id && fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ) && !decryptionFailed ) {
-            const storedNote = getStoredNote( note.id );
-            const isStoredNoteEncrypted = isEncrypted( storedNote );
-            if ( isStoredNoteEncrypted ) {
-                const decryptedNote = decrypt( storedNote );
-                if ( decryptedNote ) {
-                    fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ).innerHTML = decryptedNote;
-                } else {
-                    // Decryption failed.
-                    decryptionFailed = true;
-                    closeProgressModal();
-                    launchPassphraseModal();
-                }
-            } else {
-                fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ).innerHTML = storedNote;
-                if ( useEncryption ) {
-                    fragmentNotes.querySelector('#' + note.id).classList.add('not-encrypted');
-                }
-            }
+        if ( note && note.id && fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ) ) {
+            fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ).innerHTML = getStoredNote(note.id);
         } else {
-            console.error( 'insertNote', { note } );
+            console.error( 'insertNote', { note, 'note.id' : note.id, '.notes__sections' : fragmentNotes.querySelector( '#' + note.id + ' .notes__sections' ) } );
         }
     }
     catch( error ) {
         console.error( 'insertNote', { error } );
+    }
+};
+const decryptNote = ( note ) => {
+    const storedNote = getStoredNote( note.id );
+    const isStoredNoteEncrypted = isEncrypted( storedNote );
+    if ( isStoredNoteEncrypted ) {
+        const decryptedNote = decrypt( storedNote );
+        if ( decryptedNote ) {
+            fragmentNotes.querySelector('#' + note.id + ' .notes__sections').innerHTML = decryptedNote;
+        } else {
+            // Decryption failed.
+            decryptionFailed = true;
+        }
+    } else {
+        fragmentNotes.querySelector('#' + note.id).classList.add('not-encrypted');
+    }
+};
+const decryptAllNotes = () => {
+    decryptionFailed = false;
+    if ( useEncryption ) {
+        notes.forEach( ( note ) => {
+            if ( !decryptionFailed ) {
+                decryptNote( note );
+            }
+        });
+        if ( decryptionFailed ) {
+            clearMainNotes();
+            launchPassphraseModal();
+        }
+    }
+};
+const appendNotesToMain = () => {
+    if ( ( useEncryption && !decryptionFailed ) || !useEncryption ) {
+        mainNotes.appendChild(fragmentNotes);
+        document.querySelector('.nav__ctrl').appendChild(templateNavController.content.cloneNode(true));
+        initChecklist('Groceries');
     }
 };
 const downloadProgress = () => {
@@ -503,18 +562,19 @@ const downloadProgress = () => {
     if ( files ) { files.value += progressIncrement; }
     downloadTally += 1;
     if ( downloadTally === notes.length ) {
-        if ( decryptionFailed === false ) {
-            mainNotes.appendChild( fragmentNotes );
-            document.querySelector('.nav__ctrl').appendChild(templateNavController.content.cloneNode(true));
-            closeProgressModal();
-            initChecklist('Groceries');
+        closeProgressModal();
+        if ( useEncryption && !getPassphrase() ) {
+            launchPassphraseModal();
+        } else {
+            decryptAllNotes();
+            appendNotesToMain();
         }
     }
-}
+};
 const importStoreInsertAllNotes = () => {
     fragmentNotes    = new DocumentFragment();
-    decryptionFailed = false;
     downloadTally    = 0;
+    decryptionFailed = false;
     clearMainNotes();
     launchProgressModal();
     notes.forEach(( note ) => {
@@ -522,54 +582,14 @@ const importStoreInsertAllNotes = () => {
         // Get each note individually and store its contents.
         getText(notesDirectory + note.dir)
             .then(data => {
-                if ( decryptionFailed === false ) {
-                    storeNote(note.id, data.content);
-                    insertNote(note);
-                }
+                storeNote(note.id, data.content);
+                insertNote(note);
                 downloadProgress(note);
             })
             .catch(error => {
                 console.error('getText', { error, 'dir' : notesDirectory + note.dir } )
             });
     });
-};
-
-
-// ASYNC
-
-async function getText( dir ) {
-    const response = await fetch( 'edit-note.php' + '?url=' + dir );
-    return await response.json();
-}
-async function saveText( data ) {
-    return await fetch('edit-note.php', {method: 'POST', body: data});
-}
-
-
-// ENCRYPTION
-
-const encrypt = ( data ) => {
-    let encryptedData = "";
-    try {
-        encryptedData = CryptoJS.AES.encrypt( data, getPassphrase() );
-    }
-    catch( e ) {
-        console.error( 'Encrypt', { e } );
-    }
-    return encryptedData ;
-};
-const decrypt = ( data ) => {
-    let decryptedData = "";
-    try {
-        decryptedData = CryptoJS.AES.decrypt( data, getPassphrase() ).toString( CryptoJS.enc.Utf8 );
-    }
-    catch( e ) {
-        console.error( 'Decrypt', { e } );
-    }
-    return decryptedData;
-};
-const isEncrypted = ( data ) => {
-    return ( data.substring(0,3) === 'U2F' );
 };
 
 
@@ -666,11 +686,7 @@ const deselectAll = ( section ) => {
 
 setupMainEvents();
 setupNavbarControllerEvents();
-if ( useEncryption && !getPassphrase() ) {
-    launchPassphraseModal();
-} else {
-    importStoreInsertAllNotes();
-}
+importStoreInsertAllNotes();
 // Register the service worker
 if ('serviceWorker' in navigator) {
     // Wait for the 'load' event to not block other work
