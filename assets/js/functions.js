@@ -588,7 +588,7 @@ const downloadProgress = () => {
     if ( files ) { files.value += progressIncrement; }
     downloadTally += 1;
     if ( downloadTally === notes.length ) {
-        if ( useEncryption && getPassphrase() ) {
+        if ( useEncryption && getPassphrase() || isDemo ) {
             closeProgressModal();
             decryptAllNotes();
             appendNotesToMain();
