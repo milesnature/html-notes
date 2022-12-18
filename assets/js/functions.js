@@ -72,6 +72,7 @@ const getStoredNote = ( name ) => {
 
 const togglePageScroll = ( hide, which ) => {
     try {
+        console.log( 'togglePageScroll', which );
         if ( hide === true ) {
             document.querySelector('html').classList.add('hidden');
         } else {
@@ -97,7 +98,6 @@ const trapFocus = ( action, which ) => {
     catch (error) { console.error( 'trapFocus', { action, which, error } ) }
 };
 const closeModal = ( type ) => {
-    console.log( 'closeModal()', type );
     let container = '';
     let shadowbox = '';
     try {
@@ -588,8 +588,8 @@ const downloadProgress = () => {
     if ( files ) { files.value += progressIncrement; }
     downloadTally += 1;
     if ( downloadTally === notes.length ) {
-        closeProgressModal();
         if ( useEncryption && getPassphrase() ) {
+            closeProgressModal();
             decryptAllNotes();
             appendNotesToMain();
         }
