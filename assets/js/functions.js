@@ -172,7 +172,7 @@ const handleModalEvents = ( e ) => {
                 saveText( data )
                     .then( () => {
                         storeNote( id, textareaValueEncrypted );
-                        document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = decrypt( getStoredNote( id ) );
+                        if ( !isDemo ) { document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = decrypt( getStoredNote( id ) ); }
                         document.getElementById( refreshId ).open = true;
                         if ( useEncryption ) {
                             document.querySelector('#' + refreshId).classList.remove('not-encrypted');
@@ -589,7 +589,7 @@ const downloadProgress = () => {
     downloadTally += 1;
     if ( downloadTally === notes.length ) {
         closeProgressModal();
-        if ( useEncryption && getPassphrase() ) { // Redundant but left this anyway.
+        if ( useEncryption && getPassphrase() ) {
             decryptAllNotes();
             appendNotesToMain();
         }
@@ -601,7 +601,7 @@ const importStoreInsertAllNotes = () => {
     decryptionFailed = false;
     clearMainNotes();
     if ( useEncryption && !getPassphrase() ) {
-        launchPassphraseModal( 'importStoreInsertAllNotes()' );
+        launchPassphraseModal();
     } else {
         launchProgressModal();
     }
