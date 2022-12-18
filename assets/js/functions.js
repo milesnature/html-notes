@@ -96,24 +96,50 @@ const trapFocus = ( action, which ) => {
     }
     catch (error) { console.error( 'trapFocus', { action, which, error } ) }
 };
-const closeModal = ( which ) => {
+const closeModal = ( type ) => {
+    console.log( 'closeModal()', type );
+    let container = '';
+    let shadowbox = '';
     try {
-        const modalContainer = Array.from( document.querySelectorAll( '[class^="modal__container"]' ) );
-        const modalShadowbox = Array.from( document.querySelectorAll( '[class^="modal__shadowbox"]' ) );
-        if ( modalContainer.length && modalShadowbox.length ) {
-            modalContainer.forEach( ( c ) => { c.remove(); } );
-            modalShadowbox.forEach( ( s ) => { s.remove(); } );
-            trapFocus( false, which );
+        switch ( type ) {
+            case 'passphrase':
+                container = document.querySelector('[class="modal__container-passphrase"]');
+                shadowbox = document.querySelector('[class="modal__shadowbox-passphrase"]');
+                if (container) { container.remove() }
+                if (shadowbox) { shadowbox.remove() }
+                trapFocus( false, type );
+                break;
+            case 'progress':
+                container = document.querySelector('[class="modal__container-progress"]');
+                shadowbox = document.querySelector('[class="modal__shadowbox-progress"]');
+                if (container) { container.remove() }
+                if (shadowbox) { shadowbox.remove() }
+                trapFocus( false, type );
+                break;
+            default: {
+                const modalContainer = Array.from(document.querySelectorAll('[class^="modal__container"]'));
+                const modalShadowbox = Array.from(document.querySelectorAll('[class^="modal__shadowbox"]'));
+                if ( modalContainer.length && modalShadowbox.length ) {
+                    modalContainer.forEach( ( c ) => { c.remove(); } );
+                    modalShadowbox.forEach( ( s ) => { s.remove(); } );
+                    trapFocus( false, type );
+                }
+            }
         }
     }
-    catch(error) { console.error( 'closeModal', { which, error } ) }
+    catch(error) { console.error( 'closeModal', { type, error } ) }
 };
 const handlePassphrase = ( value ) => {
     if ( value ) {
         setPassphrase( value );
         closePassphraseModal();
-        decryptAllNotes();
-        appendNotesToMain();
+        if ( downloadTally === notes.length ) {
+            decryptAllNotes();
+            appendNotesToMain();
+        } else {
+            launchProgressModal();
+        }
+
     }
 };
 const handleModalEvents = ( e ) => {
@@ -545,7 +571,7 @@ const decryptAllNotes = () => {
         });
         if ( decryptionFailed ) {
             clearMainNotes();
-            launchPassphraseModal();
+            launchPassphraseModal( 'decryptAllNotes()' );
         }
     }
 };
@@ -563,9 +589,7 @@ const downloadProgress = () => {
     downloadTally += 1;
     if ( downloadTally === notes.length ) {
         closeProgressModal();
-        if ( useEncryption && !getPassphrase() ) {
-            launchPassphraseModal();
-        } else {
+        if ( useEncryption && getPassphrase() ) { // Redundant but left this anyway.
             decryptAllNotes();
             appendNotesToMain();
         }
@@ -576,7 +600,11 @@ const importStoreInsertAllNotes = () => {
     downloadTally    = 0;
     decryptionFailed = false;
     clearMainNotes();
-    launchProgressModal();
+    if ( useEncryption && !getPassphrase() ) {
+        launchPassphraseModal( 'importStoreInsertAllNotes()' );
+    } else {
+        launchProgressModal();
+    }
     notes.forEach(( note ) => {
         constructDetails( note );
         // Get each note individually and store its contents.
@@ -683,10 +711,9 @@ const deselectAll = ( section ) => {
 
 
 // INIT
-
+importStoreInsertAllNotes();
 setupMainEvents();
 setupNavbarControllerEvents();
-importStoreInsertAllNotes();
 // Register the service worker
 if ('serviceWorker' in navigator) {
     // Wait for the 'load' event to not block other work
