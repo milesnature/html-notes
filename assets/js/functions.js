@@ -72,7 +72,6 @@ const getStoredNote = ( name ) => {
 
 const togglePageScroll = ( hide, which ) => {
     try {
-        console.log( 'togglePageScroll', which );
         if ( hide === true ) {
             document.querySelector('html').classList.add('hidden');
         } else {
@@ -98,33 +97,15 @@ const trapFocus = ( action, which ) => {
     catch (error) { console.error( 'trapFocus', { action, which, error } ) }
 };
 const closeModal = ( type ) => {
-    let container = '';
-    let shadowbox = '';
+    const containerClass = 'modal__container-' + type;
+    const shadowboxClass = 'modal__shadowbox-' + type;
     try {
-        switch ( type ) {
-            case 'passphrase':
-                container = document.querySelector('[class="modal__container-passphrase"]');
-                shadowbox = document.querySelector('[class="modal__shadowbox-passphrase"]');
-                if (container) { container.remove() }
-                if (shadowbox) { shadowbox.remove() }
-                trapFocus( false, type );
-                break;
-            case 'progress':
-                container = document.querySelector('[class="modal__container-progress"]');
-                shadowbox = document.querySelector('[class="modal__shadowbox-progress"]');
-                if (container) { container.remove() }
-                if (shadowbox) { shadowbox.remove() }
-                trapFocus( false, type );
-                break;
-            default: {
-                const modalContainer = Array.from(document.querySelectorAll('[class^="modal__container"]'));
-                const modalShadowbox = Array.from(document.querySelectorAll('[class^="modal__shadowbox"]'));
-                if ( modalContainer.length && modalShadowbox.length ) {
-                    modalContainer.forEach( ( c ) => { c.remove(); } );
-                    modalShadowbox.forEach( ( s ) => { s.remove(); } );
-                    trapFocus( false, type );
-                }
-            }
+        const container = document.querySelector(`[class=${CSS.escape(containerClass)}]`);
+        const shadowbox = document.querySelector(`[class=${CSS.escape(shadowboxClass)}]`);
+        if ( container && shadowbox ) {
+            container.remove();
+            shadowbox.remove();
+            trapFocus(false, type);
         }
     }
     catch(error) { console.error( 'closeModal', { type, error } ) }
@@ -139,7 +120,6 @@ const handlePassphrase = ( value ) => {
         } else {
             launchProgressModal();
         }
-
     }
 };
 const handleModalEvents = ( e ) => {
@@ -151,13 +131,13 @@ const handleModalEvents = ( e ) => {
     if ( e.repeat || btn && key && key !== "Escape" ) { return } // Enter key fires click and keyup on buttons. This prevents duplicate processing.
     if ( ( btn && btn.id === 'close' ) || ( key === "Escape" && !document.querySelector( '.modal__container-passphrase' ) ) ) {
         e.preventDefault();
-        closeModal();
+        closeModal('edit');
     } else if ( !key || key === "Enter" || ( btn && !key ) ) {
         switch ( id ) {
             case 'saveText':
                 e.preventDefault();
                 // Get ID of section to repopulate
-                const refreshId = target.closest('.modal__container').id.substring(1);
+                const refreshId = target.closest('.modal__container-edit').id.substring(1);
                 // Show Spinner
                 document.querySelector('.modal').classList.add('processing');
                 // Get Data. This encrypts the textarea (in the DOM) before getting data for payload.
@@ -177,7 +157,7 @@ const handleModalEvents = ( e ) => {
                         if ( useEncryption ) {
                             document.querySelector('#' + refreshId).classList.remove('not-encrypted');
                         }
-                        closeModal();
+                        closeModal('edit');
                     })
                     .catch( error => { console.error( 'saveText', { error } ) });
                 break;
@@ -236,11 +216,11 @@ const addModalEventListeners = (modal) => {
     }
 }
 const launchEditModal = ( content, dir, id, title, lastUpdated ) => {
-    let modal = document.querySelector( '.modal__container' );
+    let modal = document.querySelector( '.modal__container-edit' );
     if ( !modal ) {
         const templateModalEdit = document.querySelector('#templateModalEdit');
         let fragment = templateModalEdit.content.cloneNode( true );
-        modal = fragment.querySelector( '.modal__container' );
+        modal = fragment.querySelector( '.modal__container-edit' );
         modal.setAttribute('id', '_' + id);
         if ( content ) {
             let textarea = modal.querySelector( '.modal__form-textarea' );
