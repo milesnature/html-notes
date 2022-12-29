@@ -1,4 +1,5 @@
-const useEncryption = true;
+const useEncryption = false;
+const isDemo = true;
 const notesDirectory = "notes/";
 const notes = [
     { "id" : "Node",      "dir" : "Development/Languages/node.html" },
