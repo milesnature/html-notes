@@ -70,7 +70,7 @@ const getStoredNote = ( name ) => {
 
 // MODAL
 
-const togglePageScroll = ( hide, which ) => {
+const togglePageScroll = ( hide ) => {
     try {
         if ( hide === true ) {
             document.querySelector('html').classList.add('hidden');
@@ -78,23 +78,23 @@ const togglePageScroll = ( hide, which ) => {
             document.querySelector('html').classList.remove('hidden');
         }
     }
-    catch (error) { console.error( 'togglePageScroll', { hide, which, error } ) }
+    catch (error) { console.error( 'togglePageScroll', { hide, error } ) }
 };
-const trapFocus = ( action, which ) => {
+const trapFocus = ( action ) => {
     try {
         const main = document.querySelector('main.notes');
         const nav  = document.querySelector('nav.nav__ctrl');
         if ( action ) {
             main.inert = true;
             nav.inert  = true;
-            togglePageScroll( action, which );
+            togglePageScroll( action );
         } else {
             main.inert = false;
             nav.inert  = false;
-            togglePageScroll( action, which );
+            togglePageScroll( action );
         }
     }
-    catch (error) { console.error( 'trapFocus', { action, which, error } ) }
+    catch (error) { console.error( 'trapFocus', { action, error } ) }
 };
 const closeModal = ( type ) => {
     const containerClass = 'modal__container-' + type;
@@ -105,7 +105,7 @@ const closeModal = ( type ) => {
         if ( container && shadowbox ) {
             container.remove();
             shadowbox.remove();
-            trapFocus(false, type);
+            trapFocus(false);
         }
     }
     catch(error) { console.error( 'closeModal', { type, error } ) }
@@ -114,7 +114,7 @@ const handlePassphrase = ( value ) => {
     if ( value ) {
         setPassphrase( value );
         closePassphraseModal();
-        if ( downloadTally === notes.length ) {
+        if ( downloadComplete ) {
             decryptAllNotes();
             appendNotesToMain();
         } else {
@@ -237,7 +237,7 @@ const launchEditModal = ( content, dir, id, title, lastUpdated ) => {
         addModalEventListeners(modal);
         document.body.appendChild( fragment );
     }
-    trapFocus( true, 'edit' );
+    trapFocus( true );
     const eventFocus = new Event('focus');
     modal.querySelector('.modal__form-textarea').focus();
     modal.querySelector('.modal__form-textarea').dispatchEvent(eventFocus);
@@ -255,7 +255,7 @@ const launchPassphraseModal = () => {
         addModalEventListeners(modal);
         document.body.appendChild( fragment );
         document.querySelector('.modal__passphrase-div-input').focus();
-        trapFocus( true, 'passphrase' );
+        trapFocus( true );
     }
 };
 const closePassphraseModal = () => {
@@ -267,7 +267,7 @@ const launchProgressModal = () => {
         const templateModalProgress = document.querySelector('#templateModalProgress');
         let fragment = templateModalProgress.content.cloneNode( true );
         document.body.appendChild( fragment );
-        trapFocus( true, 'progress' );
+        trapFocus( true );
     }
 };
 const closeProgressModal = () => {
@@ -472,6 +472,7 @@ const templateNavController = document.getElementById('templateNavController');
 let fragmentNotes           = new DocumentFragment();
 let decryptionFailed        = false;
 let downloadTally           = 0;
+let downloadComplete        = false;
 const clearMainNotes = () => {
     mainNotes.innerHTML = '';
     document.querySelector('.nav__ctrl').innerHTML = '';
@@ -567,7 +568,8 @@ const downloadProgress = () => {
     const files             = document.getElementById('files');
     if ( files ) { files.value += progressIncrement; }
     downloadTally += 1;
-    if ( downloadTally === notes.length ) {
+    downloadComplete = ( downloadTally === notes.length );
+    if ( downloadComplete ) {
         if ( useEncryption && getPassphrase() || isDemo ) {
             closeProgressModal();
             decryptAllNotes();
@@ -578,6 +580,7 @@ const downloadProgress = () => {
 const importStoreInsertAllNotes = () => {
     fragmentNotes    = new DocumentFragment();
     downloadTally    = 0;
+    downloadComplete = false;
     decryptionFailed = false;
     clearMainNotes();
     if ( useEncryption && !getPassphrase() ) {

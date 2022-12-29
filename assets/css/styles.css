@@ -739,7 +739,7 @@ html.hidden .nav__ctrl {
 
 /* START MODAL */
 
-.modal__shadowbox,
+.modal__shadowbox-edit,
 .modal__shadowbox-passphrase,
 .modal__shadowbox-progress {
     position         : fixed;
