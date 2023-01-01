@@ -215,7 +215,7 @@ const addModalEventListeners = (modal) => {
         modal.addEventListener( 'keyup', ( e ) => { handleModalEvents( e ) } );
     }
 }
-const launchEditModal = ( content, dir, id, title, lastUpdated ) => {
+const launchEditModal = ( content, dir, id, title, lastModified ) => {
     let modal = document.querySelector( '.modal__container-edit' );
     if ( !modal ) {
         const templateModalEdit = document.querySelector('#templateModalEdit');
@@ -232,7 +232,8 @@ const launchEditModal = ( content, dir, id, title, lastUpdated ) => {
         let h2 = modal.getElementsByTagName('h2')[0];
         h2.replaceChild( document.createTextNode( title.replace('-', ' ') ), h2.childNodes[0] );
         let small = modal.getElementsByTagName('small')[0];
-        small.appendChild( document.createTextNode( lastUpdated ) );
+        const lastModifiedDate = ( new Date( lastModified ).toString() !== 'Invalid Date' ) ? new Date( lastModified ).toString() : '';
+        small.appendChild( document.createTextNode( lastModifiedDate ) );
         modal.querySelector('input[name="url"]').value = dir;
         addModalEventListeners(modal);
         document.body.appendChild( fragment );
@@ -321,7 +322,7 @@ const handleMainTarget = ( e ) => {
             // Check whether storage or server is newer?
             getText( dir )
                 .then( data => {
-                    launchEditModal( data.content, dir, id, title, data.lastUpdated );
+                    launchEditModal( data.content, dir, id, title, data.lastModified );
                 })
                 .catch( error => {
                     console.error( 'getText', { error } );
@@ -429,16 +430,20 @@ const setupNavbarControllerEvents = () => {
 
 // ASYNC
 
-async function getFile( dir ) {
-    // This method loads files significantly faster than getText(). Used for initial page load, when numerous files are downloaded.
-    const response = await fetch( dir );
-    return await response.text();
-}
 async function getText( dir ) {
-    // The only reason for this method is to return the Date Last Updated.
-    const response = await fetch( 'edit-note.php' + '?url=' + dir );
-    return await response.json();
+    // last-modified response header does not work when deployed locally on localhost.
+    // If the date is necessary on local deployment, then use php (previous implementation).
+    // This is nice to have but not very useful unless multiple clients are accessing the same locally deployed directory.
+    const response     = await fetch( dir );
+    const content      = await response.text();
+    const lastModified = await ( response.headers.get('last-modified') ) ? Date.parse( response.headers.get('last-modified') ) : '';
+    return { content, lastModified };
 }
+// async function getText( dir ) {
+//     // The only reason for this method is to return the Date Last Updated.
+//     const response = await fetch( 'edit-note.php' + '?url=' + dir );
+//     return await response.json();
+// }
 async function saveText( data ) {
     return await fetch('edit-note.php', { method: 'POST', body: data });
 }
@@ -597,9 +602,9 @@ const importStoreInsertAllNotes = () => {
     notes.forEach(( note ) => {
         constructDetails( note );
         // Get each note individually and store its contents.
-        getFile(notesDirectory + note.dir)
+        getText(notesDirectory + note.dir)
             .then(data => {
-                storeNote(note.id, data);
+                storeNote(note.id, data.content);
                 insertNote(note);
                 downloadProgress(note);
             })
