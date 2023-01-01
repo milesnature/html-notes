@@ -429,7 +429,13 @@ const setupNavbarControllerEvents = () => {
 
 // ASYNC
 
+async function getFile( dir ) {
+    // This method loads files significantly faster than getText(). Used for initial page load, when numerous files are downloaded.
+    const response = await fetch( dir );
+    return await response.text();
+}
 async function getText( dir ) {
+    // The only reason for this method is to return the Date Last Updated.
     const response = await fetch( 'edit-note.php' + '?url=' + dir );
     return await response.json();
 }
@@ -694,6 +700,7 @@ const deselectAll = ( section ) => {
 
 
 // INIT
+
 importStoreInsertAllNotes();
 setupMainEvents();
 setupNavbarControllerEvents();
@@ -704,9 +711,13 @@ if ('serviceWorker' in navigator) {
         // Try to register the service worker.
         try {
             const reg = await navigator.serviceWorker.register('service-worker.js');
-            console.log('Service worker registered! 😎', reg);
+            // console.log('Service worker registered! 😎', reg);
         } catch (err) {
-            console.log('😥 Service worker registration failed: ', err);
+            // console.log('😥 Service worker registration failed: ', err);
         }
     });
 }
+
+
+// These sections were previously separated into javascript modules.
+// They are combined into one file to reduce server requests, to maintain portability, to simplify updates, and to avoid build/compilation scripts.
