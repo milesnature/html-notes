@@ -935,10 +935,11 @@ html.hidden .nav__ctrl {
     .modal__form-textarea {
         font-size: 1rem;
     }
-    .modal__header-h2 {
-        /*font-size : 1.1rem;*/
+    .modal__header {
+        grid-template-columns: auto 40% 44px;
     }
-    .modal__nav-button {
+    .modal__header-small {
+        line-height: 1rem;
     }
 }
 @media ( max-width: 1000px ) and ( pointer: coarse ) {
