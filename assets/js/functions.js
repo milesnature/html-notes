@@ -440,7 +440,7 @@ async function getText( dir ) {
     return await response.json();
 }
 async function saveText( data ) {
-    return await fetch('edit-note.php', {method: 'POST', body: data});
+    return await fetch('edit-note.php', { method: 'POST', body: data });
 }
 
 
@@ -597,9 +597,9 @@ const importStoreInsertAllNotes = () => {
     notes.forEach(( note ) => {
         constructDetails( note );
         // Get each note individually and store its contents.
-        getText(notesDirectory + note.dir)
+        getFile(notesDirectory + note.dir)
             .then(data => {
-                storeNote(note.id, data.content);
+                storeNote(note.id, data);
                 insertNote(note);
                 downloadProgress(note);
             })
