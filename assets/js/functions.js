@@ -285,7 +285,7 @@ const section = `
     </ul>
 </section>`;
 const listItem         = `<li></li>`;
-const listItemCode     = `<li><button class="code" tabindex="0"></button></li>`;
+const listItemCode     = `<li><button class="code"></button></li>`;
 const listItemBookmark = `<li><a href="" target="_blank" rel="noreferrer"></a></li>`;
 
 
@@ -433,17 +433,12 @@ const setupNavbarControllerEvents = () => {
 async function getText( dir ) {
     // last-modified response header does not work when deployed locally on localhost.
     // If the date is necessary on local deployment, then use php (previous implementation).
-    // This is nice to have but not very useful unless multiple clients are accessing the same locally deployed directory.
+    // This is nice to have but not very useful.
     const response     = await fetch( dir );
     const content      = await response.text();
     const lastModified = await ( response.headers.get('last-modified') ) ? Date.parse( response.headers.get('last-modified') ) : '';
     return { content, lastModified };
 }
-// async function getText( dir ) {
-//     // The only reason for this method is to return the Date Last Updated.
-//     const response = await fetch( 'edit-note.php' + '?url=' + dir );
-//     return await response.json();
-// }
 async function saveText( data ) {
     return await fetch('edit-note.php', { method: 'POST', body: data });
 }
