@@ -921,6 +921,18 @@ html.hidden .nav__ctrl {
     place-content      : center;
     font-weight        : var(--font-weight-bold);
 }
+.modal__progress-div label {
+    display     : block;
+    width       : clamp(150px, 200px, 300px);
+    min-height  : 0;
+    line-height : 1rem;
+    font-weight : var(--font-weight-bold);
+    padding     : 0 0 0 .25rem;
+    margin      : 0;
+}
+.modal__progress-div progress {
+    width         : clamp(150px, 200px, 300px);
+}
 .modal__passphrase-div-label {
     display     : block;
     width       : clamp(150px, 200px, 300px);
@@ -966,7 +978,9 @@ html.hidden .nav__ctrl {
         height : clamp(200px, 220px, 220px);
     }
     .modal__passphrase-div-label,
-    .modal__passphrase-div-input {
+    .modal__passphrase-div-input,
+    .modal__progress-div label,
+    .modal__progress-div progress {
         width : clamp(200px, 250px, 300px);
     }
 }
