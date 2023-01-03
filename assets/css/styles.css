@@ -804,7 +804,7 @@ html.hidden .nav__ctrl {
 .modal__header {
     position              : relative;
     display               : grid;
-    grid-template-columns : auto 44px;
+    grid-template-columns : 1fr 44px;
     grid-gap              : 11px;
     width                 : 100%;
     align-items           : center;
@@ -812,12 +812,16 @@ html.hidden .nav__ctrl {
     height                : 44px;
     box-shadow            : var( --box-shadow );
     border-radius         : var( --border-radius-large-top );
-    padding-left          : 15px;
+}
+.modal__header-h2 {
+    padding-left : 15px;
+    line-height  : 1.1rem;
 }
 .modal__header-small {
     display     : inline-block;
     padding     : 0;
-    line-height : 2.25rem;
+    line-height : 1rem;
+    text-align  : right;
 }
 .modal__header-button {
     width               : 44px;
@@ -832,7 +836,9 @@ html.hidden .nav__ctrl {
 .modal__header-button-span {
     display: none;
 }
-.modal__container-edit .modal__header { grid-template-columns : auto max-content 44px; }
+.modal__container-edit .modal__header {
+    grid-template-columns : 2fr 1fr 44px;
+}
 .modal__form,
 .modal__div {
     display : contents;
@@ -932,15 +938,19 @@ html.hidden .nav__ctrl {
     border-radius : var( --border-radius-small );
     font-size     : 1.15rem;
 }
-@media ( pointer: coarse ) {
+@media ( max-width: 600px ) {
     .modal__form-textarea {
         font-size: 1rem;
     }
     .modal__container-edit .modal__header {
-        grid-template-columns: auto 40% 44px;
+        grid-template-columns: 1fr 88px 44px;
     }
-    .modal__container-edit .modal__header-small {
-        line-height: 1rem;
+    .modal__header-small {
+        font-size  : .8rem;
+        text-align : center;
+    }
+    .modal__nav-button {
+        font-size: 1rem;
     }
 }
 @media ( max-width: 1000px ) and ( pointer: coarse ) {

@@ -232,7 +232,7 @@ const launchEditModal = ( content, dir, id, title, lastModified ) => {
         let h2 = modal.getElementsByTagName('h2')[0];
         h2.replaceChild( document.createTextNode( title.replace('-', ' ') ), h2.childNodes[0] );
         let small = modal.getElementsByTagName('small')[0];
-        const lastModifiedDate = ( new Date( lastModified ).toLocaleString() !== 'Invalid Date' ) ? new Date( lastModified ).toLocaleString('en-US',{ dateStyle: 'long', timeStyle: 'long' }) : '';
+        const lastModifiedDate = ( new Date( lastModified ).toLocaleString() !== 'Invalid Date' ) ? new Date( lastModified ).toLocaleString('en-US',{ dateStyle: 'medium', timeStyle: 'medium' }) : '';
         small.appendChild( document.createTextNode( lastModifiedDate ) );
         modal.querySelector('input[name="url"]').value = dir;
         addModalEventListeners(modal);
