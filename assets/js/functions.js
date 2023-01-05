@@ -134,7 +134,7 @@ const handleModalEvents = ( e ) => {
         closeModal('edit');
     } else if ( !key || key === "Enter" || ( btn && !key ) ) {
         switch ( id ) {
-            case 'saveText':
+            case 'saveNote':
                 e.preventDefault();
                 // Get ID of section to repopulate
                 const refreshId = target.closest('.modal__container-edit').id.substring(1);
@@ -144,22 +144,26 @@ const handleModalEvents = ( e ) => {
                 const form                   = document.querySelector('form');
                 let   textareaValue          = form.querySelector('textarea').value;
                 let   textareaValueEncrypted = textareaValue;
-                if ( !isEncrypted( textareaValue ) ) {
+                if ( !isEncrypted( textareaValue ) && useEncryption ) {
                     textareaValueEncrypted = encrypt( textareaValue );
                     form.querySelector('textarea').value = textareaValueEncrypted;
                 }
                 const data = new FormData(document.querySelector('form')); // Use Array.from(data) to view FormData which appears empty.
-                saveText( data )
+                saveNote( data )
                     .then( () => {
                         storeNote( id, textareaValueEncrypted );
-                        if ( !isDemo ) { document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = decrypt( getStoredNote( id ) ); }
+                        if ( !isDemo && useEncryption ) {
+                            document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = decrypt( getStoredNote( id ) );
+                        } else {
+                            document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = textareaValue;
+                        }
                         document.getElementById( refreshId ).open = true;
                         if ( useEncryption ) {
                             document.querySelector('#' + refreshId).classList.remove('not-encrypted');
                         }
                         closeModal('edit');
                     })
-                    .catch( error => { console.error( 'saveText', { error } ) });
+                    .catch( error => { console.error( 'saveNote', { error } ) });
                 break;
             case 'copyToClipboardSection':
                 e.preventDefault();
@@ -276,13 +280,13 @@ const closeProgressModal = () => {
 };
 const section = `
 <section class="note__section">
-    <h3></h3>
-    <p></p>
-    <ul>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
+  <h3></h3>
+  <p></p>
+  <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
 </section>`;
 const listItem         = `<li></li>`;
 const listItemCode     = `<li><button class="code"></button></li>`;
@@ -320,12 +324,12 @@ const handleMainTarget = ( e ) => {
             dir   = notesDirectory + notes.filter( ( note ) => { return note.id === id } )[0].dir;
             // Pull from storage be default?
             // Check whether storage or server is newer?
-            getText( dir )
+            getNote( dir )
                 .then( data => {
                     launchEditModal( data.content, dir, id, title, data.lastModified );
                 })
                 .catch( error => {
-                    console.error( 'getText', { error } );
+                    console.error( 'getNote', { error } );
                     // Get from local storage instead.
                     const note    = notes.filter( ( note ) => { return note.id === id } );
                     const content = getStoredNote( id );
@@ -430,7 +434,7 @@ const setupNavbarControllerEvents = () => {
 
 // ASYNC
 
-async function getText( dir ) {
+async function getNote( dir ) {
     // last-modified response header does not work when deployed locally on localhost.
     // If the date is necessary on local deployment, then use php (previous implementation).
     // This is nice to have but not very useful.
@@ -439,8 +443,8 @@ async function getText( dir ) {
     const lastModified = await ( response.headers.get('last-modified') ) ? Date.parse( response.headers.get('last-modified') ) : '';
     return { content, lastModified };
 }
-async function saveText( data ) {
-    return await fetch('edit-note.php', { method: 'POST', body: data });
+async function saveNote( data ) {
+    return await fetch('assets/php/save-note.php', { method: 'POST', body: data });
 }
 
 
@@ -576,7 +580,7 @@ const downloadProgress = () => {
     downloadTally += 1;
     downloadComplete = ( downloadTally === notes.length );
     if ( downloadComplete ) {
-        if ( useEncryption && getPassphrase() || isDemo ) {
+        if ( ( useEncryption && getPassphrase() ) || !useEncryption || isDemo ) {
             closeProgressModal();
             decryptAllNotes();
             appendNotesToMain();
@@ -597,14 +601,14 @@ const importStoreInsertAllNotes = () => {
     notes.forEach(( note ) => {
         constructDetails( note );
         // Get each note individually and store its contents.
-        getText(notesDirectory + note.dir)
+        getNote(notesDirectory + note.dir)
             .then(data => {
                 storeNote(note.id, data.content);
                 insertNote(note);
                 downloadProgress(note);
             })
             .catch(error => {
-                console.error('getText', { error, 'dir' : notesDirectory + note.dir } )
+                console.error('getNote', { error, 'dir' : notesDirectory + note.dir } )
             });
     });
 };

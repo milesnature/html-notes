@@ -40,7 +40,7 @@ Encryption disabled for ease of use. Saving notes disabled for security.
 * A fair amount of traditional front-end web development knowledge and work is required to set up. Afterwards, the maintenance is elementary and updating notes can be done from the browser.
 * Encryption is using CryptoJS and temporarily storing the passphrase in the browser session storage. This is vulnerable to XSS attacks but is fairly secure otherwise. The main reason for the encryption is to prevent the web-host from snooping. True secrecy would require more.
 * A passcode cannot be changed after it is used. However, you could copy and paste the unencrypted code back into your files and start over. Using more than one passcode to encrypt data will break the site. Any decryption failures will interrupt the process and launch the passphrase modal again.
-* Refer to the browser console for details error messages.
+* Refer to the browser console for detailed error messages.
 
 ### Basic Anatomy
 

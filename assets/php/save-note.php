@@ -8,7 +8,7 @@
     /**
      * @throws Exception
      */
-    function writeNote( $f, $c ): void {
+    function saveNote( $f, $c ): void {
         if( file_exists( $f ) === false ) {
             throw new Exception( "File does not exist." );
         } elseif ( is_writeable( $f ) === false ) {
@@ -23,10 +23,10 @@
 
     switch ( $requestMethod ) {
         case 'POST':
-            $file    = $_POST['url'];
+            $file    = '../../'.$_POST['url'];
             $content = $_POST['content'];
             try {
-                writeNote( $file, $content );
+                saveNote( $file, $content );
             } catch ( Exception $e ) {
                 echo "Exception = ".$e." URL = ".$file.". Content = ".$content.".";
             }
