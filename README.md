@@ -11,11 +11,11 @@ This system provides a single source of truth that is easily accessible from any
 ## Pros
 * Private. Client-side encryption (AES) means you can host your files anywhere with confidence.
 * External hosting. Access important notes and bookmarks from anywhere. Perfect for anyone that uses multiple browsers and or multiple devices.
-* Keep all your notes in one place. Prevent the spread/duplication of files across devices, applications, and directories.
 * Portable. Host locally with a basic php server or combine everything into one static html file.
+* Prevent duplicates. A single source helps prevent the spread/duplication of files across devices, applications, and directories.
 * Self-custody. No ads, no tracking, no third parties.
-* No database. Uses plain text files.
-* Super lightweight. Lightening fast load times. No compiling or builds necessary. Minimal PHP script (to edit/write files). It is easily swapped out with another back-end, like Python or Node.
+* No database.
+* Super lightweight. Lightening fast load times. No compiling or builds. Minimal PHP script (to edit/write files). It is easily swapped out with another back-end, like Python or Node.
 * Search is instantaneous because all the data is on a single page.
 * Edit notes directly in the browser or in your favorite text editor.
 * Designed for mobile.
@@ -26,7 +26,7 @@ This system provides a single source of truth that is easily accessible from any
 * Basic knowledge of HTML, CSS, and JSON is required.
 * Adding new sections and files is still a manual process.
 * You must completely trust whoever has access to this site! It would be a _security nightmare_ otherwise.
-* Using a code editor is the most powerful experience (for unencrypted notes).
+* Using a code editor is the most powerful experience.
 * Once files are encrypted, the only reasonable way to edit them is through the browser.
 * Tailored to the organized, meticulous note taker.
 
