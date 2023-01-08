@@ -955,7 +955,7 @@ html.hidden .nav__ctrl {
         font-size: 1rem;
     }
     .modal__container-edit .modal__header {
-        grid-template-columns: 1fr 88px 44px;
+        grid-template-columns: 1fr 92px 44px;
     }
     .modal__header-small {
         font-size  : .8rem;
