@@ -35,7 +35,6 @@ https://example.html-notes.app/
 * Once files are encrypted, the only reasonable way to edit them is through the browser.
 * Tailored to the organized, meticulous note taker.
 
----
 
 ## Basic Anatomy
 
@@ -109,7 +108,7 @@ Refer to the browser console for detailed error messages.
 
 Some things, like the local storage of notes, are ongoing experiments. 
 
----
+
 
 ## What inspired this specific implementation?
 
@@ -123,7 +122,7 @@ I am reevaluating the pointer cursor. I had always believed that anything clicka
 
 "What about all of these files?", you may ask. They are split out to make life easier (see Basic Anatomy). However, this page could easily be converted into a single, static html file including all the content, CSS, and Javascript (inline).
 
----
+
 
 ## The Future
 I wrote this tool for myself which means future development will be limited to my whimsical desires and needs. This could change with increased interest from additional advocates.   
