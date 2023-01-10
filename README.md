@@ -7,8 +7,6 @@ It favors simple HTML files, self-custody, client-side encryption, and freedom f
 If you're a meticulous note taker, expending the time and effort to format and "style" your plain text notes — *you may as well be using HTML and CSS to do it!*
 It's more powerful and accessible than Markdown with nearly the same amount of effort.
 
-This system provides a single source of truth that is easily accessible from anywhere. Increase privacy and security by hosting it locally, or by hard coding everything into one single html file.
-
 ## Example
 https://example.html-notes.app/
 * Encryption disabled for ease of use.
@@ -17,7 +15,7 @@ https://example.html-notes.app/
 ### Pros
 * Private. Client-side encryption (AES) means you can host your files remotely with confidence.
 * External hosting. Perfect for anyone that uses multiple browsers and or multiple devices.
-* Portable. Host locally with a basic php server or combine everything into one static html file.
+* Portable. Increase privacy and security by hosting it locally, or by hard coding everything into one single html file.
 * Prevent duplicates. A single source helps prevent the spread/duplication of files across devices, applications, and directories.
 * Self-custody. No ads, no tracking, no third parties.
 * No database.
@@ -115,7 +113,7 @@ Some things, like the local storage of notes, are ongoing experiments.
 
 ## What inspired this specific implementation?
 
-### Simplicity is divine.
+#### Simplicity is divine.
 
 I am toying with the notion of an SFA (Single File Application). A lightweight, highly performant, single purpose variant of the SPA. No frameworks, no dependencies, no bloat.
 
