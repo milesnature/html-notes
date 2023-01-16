@@ -130,7 +130,7 @@ const handleDialogEvents = ( e ) => {
                         if ( useEncryption ) {
                             document.querySelector('#' + refreshId).classList.remove('not-encrypted');
                         }
-                        // removeEditDialog();
+                        removeEditDialog();
                     })
                     .catch( error => { console.error( 'saveNote', { error } ) });
                 break;
