@@ -413,7 +413,8 @@ async function getNote( dir ) {
     return { content, lastModified };
 }
 async function saveNote( data ) {
-    return await fetch('save-note', { method: 'POST', body: data });
+    return await fetch('assets/php/save-note.php', { method: 'POST', body: data });
+    // return await fetch('save-note', { method: 'POST', body: data }); Python version
 }
 
 
