@@ -9,15 +9,21 @@
      * @throws Exception
      */
     function saveNote( $f, $c ): void {
-        if( file_exists( $f ) === false ) {
+        if ( file_exists( $f ) === false ) {
+            http_response_code(404);
             throw new Exception( "File does not exist." );
         } elseif ( is_writeable( $f ) === false ) {
-            throw new Exception( "Cannot write to file." );
+            http_response_code(500);
+            throw new Exception("Cannot write to file.");
+        } elseif ( substr( $f, -5 ) !== ".html" && substr( $f, -4 ) !== ".txt" ) {
+            http_response_code(415);
+            throw new Exception("Supported file formats are '.html' or '.txt'");
         } else {
-            $myFile = fopen( $f, "w" ) or die( "Unable to open file!" );
+            $myFile = fopen( $f, "w" ) or die ( "Unable to open file!" );
             fwrite( $myFile, $c );
             fclose( $myFile );
             header("Refresh:0");
+            echo json_encode([ 'Response' => 'Success', 'Payload' => [ 'Url' => $f, 'Content' => $c ] ]);
         }
     }
 
@@ -28,7 +34,7 @@
             try {
                 saveNote( $file, $content );
             } catch ( Exception $e ) {
-                echo "Exception = ".$e." URL = ".$file.". Content = ".$content.".";
+                echo json_encode([ 'Response' => strval($e), 'Payload' => [ 'Url' => $file, 'Content' => $content ] ]);
             }
             break;
         default:
