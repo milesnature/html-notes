@@ -78,7 +78,24 @@ const toggleBodyDialog = ( display, type ) => {
         document.body.classList.add('dialog');
         if (type) { document.body.classList.add(type); }
     }
-}
+};
+const removeDialog = () => {
+    if ( document.getElementById('dialogEdit') ) {
+        removeEditDialog();
+    } else if ( document.getElementById('dialogSetup') ) {
+        removeSetupDialog();
+    }
+};
+const handleDocumentEvents = ( e ) => {
+    const key = e.key;
+    if ( key === "Escape" ) {
+        e.preventDefault();
+        removeDialog();
+    }
+};
+const setupDocumentEvents = () => {
+    document.addEventListener( 'keyup', ( e ) => { handleDocumentEvents( e ) } );
+};
 const handlePassphrase = ( value ) => {
     if ( value ) {
         setPassphrase( value );
@@ -92,15 +109,14 @@ const handlePassphrase = ( value ) => {
     }
 };
 const handleDialogEvents = ( e ) => {
-    const
-        target = e.target,
-        id     = target.id,
-        key    = e.key,
-        btn    = target.closest('button');
-    if ( e.repeat || btn && key && key !== "Escape" ) { return } // Enter key fires click and keyup on buttons. This prevents duplicate processing.
-    if ( ( btn && btn.id === 'close' ) || ( key === "Escape" && !document.querySelector( '#dialogPassphrase' ) ) ) {
+    const target = e.target;
+    const id     = target.id;
+    const key    = e.key;
+    const btn    = target.closest('button');
+    if ( e.repeat || btn && key ) { return } // Enter key fires click and keyup on buttons. This prevents duplicate processing.
+    if ( btn && btn.className === 'close' ) {
         e.preventDefault();
-        removeEditDialog();
+        removeDialog();
     } else if ( !key || key === "Enter" || ( btn && !key ) ) {
         switch ( id ) {
             case 'saveNote':
@@ -187,7 +203,8 @@ const addDialogEventListeners = (modal) => {
         modal.addEventListener( 'click', ( e ) => { handleDialogEvents( e ) } );
         modal.addEventListener( 'keyup', ( e ) => { handleDialogEvents( e ) } );
     }
-}
+    setupDocumentEvents();
+};
 const insertEditDialog = ( content, dir, id, title, lastModified ) => {
     if ( !document.getElementById('dialogEdit') ) {
         const templateDialogEdit = document.getElementById('templateDialogEdit');
@@ -220,7 +237,21 @@ const insertEditDialog = ( content, dir, id, title, lastModified ) => {
 };
 const removeEditDialog = () => {
     document.getElementById('dialogEdit').remove();
-    toggleBodyDialog(true);
+    toggleBodyDialog(true, 'edit');
+};
+const insertSetupDialog = () => {
+    if ( !document.getElementById('dialogEdit') ) {
+        const templateDialogSetup = document.getElementById('templateDialogSetup');
+        let fragment = templateDialogSetup.content.cloneNode(true);
+        let dialog = fragment.querySelector('dialog');
+        addDialogEventListeners(dialog);
+        toggleBodyDialog(false, 'setup');
+        document.body.prepend(fragment);
+    }
+};
+const removeSetupDialog = () => {
+    document.getElementById('dialogSetup').remove();
+    toggleBodyDialog(true, 'setup');
 };
 const insertPassphraseDialog = () => {
     clearMainNotes();
@@ -401,6 +432,26 @@ const setupNavbarControllerEvents = () => {
 };
 
 
+// FOOTER
+const footer = document.querySelector('footer');
+const handleFooterEvents = ( e ) => {
+    const
+        target = e.target,
+        btn    = target.closest('button');
+    if ( btn ) {
+        e.preventDefault();
+        insertSetupDialog();
+    }
+};
+setupFooterEvents = () => {
+    if ( supportsTouchEvents ) {
+        // Avoid double clicks in mobile. This covers tap, pencil, mouse, and keyboard in iOS.
+        footer.addEventListener( 'touchend', ( e ) => { handleFooterEvents( e ) } );
+    } else {
+        footer.addEventListener( 'click', ( e ) => { handleFooterEvents( e ) } );
+    }
+}
+
 // ASYNC
 
 async function getNote( dir ) {
@@ -449,6 +500,7 @@ const isEncrypted = ( data ) => {
 
 const mainNotes             = document.querySelector('main.notes');
 const templateNavController = document.getElementById('templateNavController');
+const templateFooter        = document.getElementById('templateFooter');
 let fragmentNotes           = new DocumentFragment();
 let decryptionFailed        = false;
 let downloadTally           = 0;
@@ -456,6 +508,7 @@ let downloadComplete        = false;
 const clearMainNotes = () => {
     mainNotes.innerHTML = '';
     document.querySelector('.nav__ctrl').innerHTML = '';
+    document.querySelector('footer').innerHTML = '';
 };
 const getDetailsFragment = ( id, directory ) => {
     const templateNoteDetails = document.querySelector('#templateNoteDetails');
@@ -540,6 +593,7 @@ const appendNotesToMain = () => {
     if ( ( useEncryption && !decryptionFailed ) || !useEncryption ) {
         mainNotes.appendChild(fragmentNotes);
         document.querySelector('.nav__ctrl').appendChild(templateNavController.content.cloneNode(true));
+        document.querySelector('footer').appendChild(templateFooter.content.cloneNode(true));
         initChecklist('Groceries');
     }
 };
@@ -588,7 +642,6 @@ const importStoreInsertAllNotes = () => {
             });
     });
 };
-
 
 
 // CHECKLIST
@@ -685,19 +738,20 @@ const deselectAll = ( section ) => {
 importStoreInsertAllNotes();
 setupMainEvents();
 setupNavbarControllerEvents();
+setupFooterEvents();
 // Register the service worker
-if ('serviceWorker' in navigator) {
-    // Wait for the 'load' event to not block other work
-    window.addEventListener('load', async () => {
-        // Try to register the service worker.
-        try {
-            const reg = await navigator.serviceWorker.register('/service-worker.js');
-            // console.log('Service worker registered! 😎', reg);
-        } catch (err) {
-            // console.log('😥 Service worker registration failed: ', err);
-        }
-    });
-}
+// if ('serviceWorker' in navigator) {
+//     // Wait for the 'load' event to not block other work
+//     window.addEventListener('load', async () => {
+//         // Try to register the service worker.
+//         try {
+//             const reg = await navigator.serviceWorker.register('/service-worker.js');
+//             // console.log('Service worker registered! 😎', reg);
+//         } catch (err) {
+//             // console.log('😥 Service worker registration failed: ', err);
+//         }
+//     });
+// }
 
 
 // These sections were previously separated into javascript modules.

@@ -743,6 +743,22 @@ html.hidden .nav__ctrl {
 
 /* END CHECKLIST */
 
+/* START FOOTER */
+footer {
+    padding    : 0 5px;
+    margin     : 0 auto;
+    width      : clamp(250px, 100%, 1400px);
+    text-align : center;
+}
+footer button {
+    background-color : var(--color-lightness-88_2);
+    font-size        : 1em;
+    padding          : 5px 10px;
+    border-radius    : var(--border-radius-small);
+    /*text-decoration  : underline;*/
+}
+/* END FOOTER */
+
 /* START DIALOG */
 
 dialog {
@@ -758,11 +774,13 @@ body.dialog {
     place-content : center;
     place-items   : center;
 }
-body.dialog.edit {
+body.dialog.edit,
+body.dialog.setup {
     align-content: start;
 }
 body.dialog .notes,
-body.dialog .nav__ctrl {
+body.dialog .nav__ctrl,
+body.dialog footer {
     display : none;
 }
 #dialogProgressBar div {
@@ -844,12 +862,9 @@ body.dialog .nav__ctrl {
 #dialogEdit textarea {
     width         : calc( 100% - 10px );
     height        : calc( 100% - 10px );
-    border        : 0px solid var(--color-text-base);
+    border        : 0 solid var(--color-text-base);
     border-radius : var(--border-radius-small);
     resize        : none;
-}
-#dialogEdit svg {
-    display : none;
 }
 #dialogEdit nav {
     display: grid;
@@ -870,6 +885,10 @@ body.dialog .nav__ctrl {
     color            : var(--color-palette-white);
     background-color : var(--color-palette-medium);
 }
+
+dialog form svg.pencil-progress {
+    display : none;
+}
 .processing form {
     display          : grid;
     place-content    : center;
@@ -885,8 +904,10 @@ body.dialog .nav__ctrl {
     visibility : hidden;
     position   : absolute;
 }
-#pencil-progress {
+.pencil-progress {
     display : none;
+    width   : 36px;
+    height  : 36px;
 }
 @keyframes rotating {
     from {
@@ -896,7 +917,7 @@ body.dialog .nav__ctrl {
         transform: rotate(360deg);
     }
 }
-.processing #pencil-progress {
+dialog.processing svg.pencil-progress {
     display   : block;
     animation : rotating 1.2s linear infinite;
 }
