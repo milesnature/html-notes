@@ -23,16 +23,16 @@
 
     <body class="">
 
-        <nav class="nav__ctrl"></nav>
+        <nav class="controller"></nav>
         <h1 class="visually-hidden">HTML Notes</h1>
         <main class="notes"></main>
         <footer></footer>
 
         <template id="templateNavController">
-          <button title="Expand All" class="nav__ctrl-button expand" type="button"><span class="nav__ctrl-button-span">Expand All</span></button>
+          <button title="Expand All" class="controller-button expand" type="button"><span class="controller-button-span">Expand All</span></button>
         </template>
         <template id="templateFooter">
-          <button class="setup">Setup</button>
+          <button class="setup" title="Setup"><span class="visually-hidden">Setup</span></button>
         </template>
         <template id="templateNoteDetails">
           <details id="" class="notes__details">
@@ -93,10 +93,11 @@
               <button title="Close" class="close" type="button"><span>Close</span></button>
             </header>
             <form>
-              <svg><use href="#pencil-progress"></use></svg>
+              <svg class="pencil-progress"><use href="#pencil-progress"></use></svg>
             </form>
             <nav>
-              <button id="saveSetting" title="Save" type="button">Save</button>
+              <div></div>
+              <button id="saveSetup" title="Save" type="button">Save</button>
             </nav>
           </dialog>
         </template>

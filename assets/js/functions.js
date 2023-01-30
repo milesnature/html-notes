@@ -378,11 +378,11 @@ const handleMainEvents = ( e ) => {
 
 // NAVBAR
 
-const navbarController   = document.querySelector('.nav__ctrl');
+const navbarController   = document.querySelector('.controller');
 const getDetailsArray    = () => { return Array.from( document.getElementsByTagName( 'details' ) ) };
 const detailsState       = ( s ) => { getDetailsArray().forEach( ( item) => { item.open = ( s === 'expand' ) } ); }
 const updateButtonAction = ( action ) => {
-    const navbarButton = navbarController.querySelector('.nav__ctrl-button');
+    const navbarButton = navbarController.querySelector('.controller-button');
     switch ( action ) {
         case 'collapse' :
             navbarButton.classList.remove( 'expand' );
@@ -452,6 +452,7 @@ setupFooterEvents = () => {
     }
 }
 
+
 // ASYNC
 
 async function getNote( dir ) {
@@ -507,7 +508,7 @@ let downloadTally           = 0;
 let downloadComplete        = false;
 const clearMainNotes = () => {
     mainNotes.innerHTML = '';
-    document.querySelector('.nav__ctrl').innerHTML = '';
+    document.querySelector('.controller').innerHTML = '';
     document.querySelector('footer').innerHTML = '';
 };
 const getDetailsFragment = ( id, directory ) => {
@@ -592,7 +593,7 @@ const decryptAllNotes = () => {
 const appendNotesToMain = () => {
     if ( ( useEncryption && !decryptionFailed ) || !useEncryption ) {
         mainNotes.appendChild(fragmentNotes);
-        document.querySelector('.nav__ctrl').appendChild(templateNavController.content.cloneNode(true));
+        document.querySelector('.controller').appendChild(templateNavController.content.cloneNode(true));
         document.querySelector('footer').appendChild(templateFooter.content.cloneNode(true));
         initChecklist('Groceries');
     }
