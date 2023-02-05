@@ -2,9 +2,10 @@
 
 header('Content-Type: text/javascript; charset=UTF-8');
 
-$GLOBALS['notesDirectory'] = "../../notes/personal";
+$GLOBALS['notesDirectory'] = "../../notes";
 
-function getDirContents( $dir, &$results = array() ) {
+function getDirContents( $dir, &$results = array() ): bool|string
+{
     $files = scandir( $dir );
     foreach ( $files as $key => $value ) {
         $path = $dir . DIRECTORY_SEPARATOR . $value;
@@ -19,5 +20,5 @@ function getDirContents( $dir, &$results = array() ) {
 
 echo "const useEncryption = true;\n";
 echo "const isDemo = false;\n";
-echo "const notesDirectory = \"notes/personal/\";\n";
+echo "const notesDirectory = \"notes/\";\n";
 echo "const scanDirNotes = ".getDirContents($GLOBALS['notesDirectory']);
