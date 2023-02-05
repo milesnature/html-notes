@@ -70,13 +70,14 @@ const getStoredNote = ( name ) => {
 
 // DIALOG
 
-const toggleBodyDialog = ( display, type ) => {
+const toggleBodyDialog = ( display, type, scrollId ) => {
     if ( display ) {
-        document.body.classList.remove('dialog');
-        if (type) { document.body.classList.remove(type); }
+        document.body.classList.remove( 'dialog' );
+        if ( type ) { document.body.classList.remove( type ); }
+        if ( scrollId ) ( document.getElementById( scrollId ).scrollIntoView( true ) );
     } else {
-        document.body.classList.add('dialog');
-        if (type) { document.body.classList.add(type); }
+        document.body.classList.add( 'dialog' );
+        if ( type ) { document.body.classList.add( type ); }
     }
 };
 const removeDialog = () => {
@@ -142,11 +143,12 @@ const handleDialogEvents = ( e ) => {
                         } else {
                             document.querySelector( '#' + refreshId + ' .notes__sections' ).innerHTML = textareaValue;
                         }
-                        document.getElementById( refreshId ).open = true;
+                        const updatedElement = document.getElementById( refreshId );
+                        updatedElement.open = true;
                         if ( useEncryption ) {
-                            document.querySelector('#' + refreshId).classList.remove('not-encrypted');
+                            updatedElement.classList.remove('not-encrypted');
                         }
-                        removeEditDialog();
+                        removeEditDialog(refreshId);
                     })
                     .catch( error => { console.error( 'saveNote', { error } ) });
                 break;
@@ -235,9 +237,9 @@ const insertEditDialog = ( content, dir, id, title, lastModified ) => {
         dialog.querySelector('#dialogEdit textarea').dispatchEvent(eventFocus);
     }
 };
-const removeEditDialog = () => {
+const removeEditDialog = ( scrollId ) => {
     document.getElementById('dialogEdit').remove();
-    toggleBodyDialog(true, 'edit');
+    toggleBodyDialog(true, 'edit', scrollId);
 };
 const insertSetupDialog = () => {
     if ( !document.getElementById('dialogEdit') ) {
@@ -261,7 +263,7 @@ const insertPassphraseDialog = () => {
     addDialogEventListeners( dialog );
     toggleBodyDialog(false);
     document.body.prepend( fragment );
-    document.querySelector('dialog input').focus();
+    document.querySelector('#dialogPassphrase input').focus();
 };
 const removePassphraseDialog = () => {
     document.getElementById('dialogPassphrase').remove();
@@ -736,11 +738,25 @@ const deselectAll = ( section ) => {
 
 // INIT
 
+let notes = [];
+const constructNotesObj = () => {
+    scanDirNotes.forEach(( note ) => {
+        note = note.substring(1);
+        const a = note.split('/');
+        const id = a[a.length - 1].replace('.html', '');
+        const dir = ( a.length === 1 ) ? a[0] : note;
+        notes.push( { 'id' : id, 'dir' : dir } );
+    });
+}
+constructNotesObj();
 importStoreInsertAllNotes();
 setupMainEvents();
 setupNavbarControllerEvents();
 setupFooterEvents();
-// Register the service worker
+
+
+// SERVICE WORKER
+
 // if ('serviceWorker' in navigator) {
 //     // Wait for the 'load' event to not block other work
 //     window.addEventListener('load', async () => {
@@ -753,6 +769,7 @@ setupFooterEvents();
 //         }
 //     });
 // }
+
 
 
 // These sections were previously separated into javascript modules.
