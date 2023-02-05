@@ -84,10 +84,10 @@ Highlighted code blocks will copy to clipboard on click or enter.
     const isDemo = false;
     const notesDirectory = "notes/";
     const notes = [
-        { "id" : "Groceries", "dir" : "Health/Nutrition/groceries.html" },
-        { "id" : "Recipies",  "dir" : "Health/Nutrition/recipies.html" },
-        { "id" : "News",      "dir" : "news.html" },
-        { "id" : "To-Do",     "dir" : "to-do.html" }
+        { "id" : "Groceries", "dir" : "Health/Nutrition/Groceries.html" },
+        { "id" : "Recipies",  "dir" : "Health/Nutrition/Recipies.html" },
+        { "id" : "News",      "dir" : "News.html" },
+        { "id" : "To-Do",     "dir" : "To-Do.html" }
     ];
 
 The notes directory is scanned with PHP and returns an array from which functions.js creates a final notes object (as seen above). The container names for each category are derived from the directory names. The note titles are derived from the filenames (id). It is best to capitalize all directories and filenames to maintain an organized and readable output. (Linux does not order uppercase and lowercase alphabetically).
