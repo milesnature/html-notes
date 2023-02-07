@@ -232,6 +232,7 @@ const insertEditDialog = ( content, dir, id, title, lastModified ) => {
         addDialogEventListeners(dialog);
         toggleBodyDialog(false, 'edit');
         document.body.prepend(fragment);
+        window.scrollTo(0, 0);
         const eventFocus = new Event('focus');
         dialog.querySelector('#dialogEdit textarea').focus();
         dialog.querySelector('#dialogEdit textarea').dispatchEvent(eventFocus);
@@ -249,6 +250,7 @@ const insertSetupDialog = () => {
         addDialogEventListeners(dialog);
         toggleBodyDialog(false, 'setup');
         document.body.prepend(fragment);
+        window.scrollTo(0, 0);
     }
 };
 const removeSetupDialog = () => {
@@ -324,11 +326,13 @@ const handleMainEvents = ( e ) => {
             title = btn.title;
             id    = ( target.closest('details') ) ? target.closest('details').id : '';
             dir   = notesDirectory + notes.filter( ( note ) => { return note.id === id } )[0].dir;
+            btn.classList.add('selected');
             // Pull from storage be default?
             // Check whether storage or server is newer?
             getNote( dir )
                 .then( data => {
                     insertEditDialog( data.content, dir, id, title, data.lastModified );
+                    document.querySelector('.selected').classList.remove('selected');
                 })
                 .catch( error => {
                     console.error( 'getNote', { error } );

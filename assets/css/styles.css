@@ -480,6 +480,10 @@ details[open] > summary button {
     background-image : var( --pencil-white );
     border-radius    : 0 var( --border-radius-small ) 0 0;
 }
+details > summary button.selected,
+details[open] > summary button.selected {
+    background-image: var( --pencil-accent );
+}
 @media ( max-width: 800px ) {
     details {
         --padding-details-summary : 8px 10px;
