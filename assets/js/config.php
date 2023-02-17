@@ -15,7 +15,7 @@ function getDirContents( $dir, &$results = array() ): bool|string
             getDirContents( $path, $results );
         }
     }
-    return json_encode( $results, JSON_UNESCAPED_SLASHES );
+    return json_encode( $results );
 }
 
 echo "const useEncryption = true;\n";

@@ -364,6 +364,14 @@ progress::-moz-progress-bar {
     word-break       : break-word;
     line-height      : 1rem;
 }
+@keyframes rotating {
+    from {
+        rotate : 0deg;
+    }
+    to {
+        rotate : 360deg;
+    }
+}
 @media ( pointer: coarse ) {
     html {
         overflow-y : unset;
@@ -472,6 +480,7 @@ summary button {
     background-position : center;
     background-repeat   : no-repeat;
     border-radius       : var( --border-radius-small-right );
+    animation           : none;
 }
 summary button span {
     display: none;
@@ -482,7 +491,8 @@ details[open] > summary button {
 }
 details > summary button.selected,
 details[open] > summary button.selected {
-    background-image: var( --pencil-accent );
+    background-image : var( --pencil-accent );
+    animation        : rotating 1.2s linear 0s infinite;
 }
 @media ( max-width: 800px ) {
     details {
@@ -755,18 +765,21 @@ footer {
     text-align : center;
 }
 footer button {
-    width: 44px;
-    height: 44px;
-    padding: 5px;
-    background-color: var(--color-gs-lt-83);
-    background-image: var( --pencil-black );
+    width               : 44px;
+    height              : 44px;
+    padding             : 5px;
+    background-color    : var(--color-gs-lt-83);
+    background-image    : var( --pencil-black );
     background-size     : 16px 16px;
     background-position : center;
     background-repeat   : no-repeat;
-    font-size: 1em;
-    /*border: 1px solid var(--color-gs-lt-87);*/
-    /*box-shadow: 0 0 7px -2px var(--color-gs-lt-25);*/
-    border-radius: var(--border-radius-small);
+    font-size           : 1em;
+    border-radius       : var(--border-radius-small);
+}
+@media ( hover: hover ) {
+    footer button:hover {
+        background-image: var( --pencil-accent );
+    }
 }
 
 /* END FOOTER */
@@ -946,17 +959,9 @@ dialog form svg.pencil-progress {
     width   : 36px;
     height  : 36px;
 }
-@keyframes rotating {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
 dialog.processing svg.pencil-progress {
     display   : block;
-    animation : rotating 1.2s linear infinite;
+    animation : rotating 1.2s linear 0s infinite;
 }
 
 @media ( max-width: 600px ) and ( pointer: coarse ) {

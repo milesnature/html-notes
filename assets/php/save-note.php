@@ -15,7 +15,7 @@
         } elseif ( is_writeable( $f ) === false ) {
             http_response_code(500);
             throw new Exception("Cannot write to file.");
-        } elseif ( substr( $f, -5 ) !== ".html" && substr( $f, -4 ) !== ".txt" ) {
+        } elseif ( !str_ends_with($f, ".html") && !str_ends_with($f, ".txt")) {
             http_response_code(415);
             throw new Exception("Supported file formats are '.html' or '.txt'");
         } else {

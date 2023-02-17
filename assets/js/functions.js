@@ -92,6 +92,7 @@ const handleDocumentEvents = ( e ) => {
     if ( key === "Escape" ) {
         e.preventDefault();
         removeDialog();
+        removeSelectedClass();
     }
 };
 const setupDocumentEvents = () => {
@@ -240,6 +241,7 @@ const insertEditDialog = ( content, dir, id, title, lastModified ) => {
 };
 const removeEditDialog = ( scrollId ) => {
     document.getElementById('dialogEdit').remove();
+    removeSelectedClass();
     toggleBodyDialog(true, 'edit', scrollId);
 };
 const insertSetupDialog = () => {
@@ -299,6 +301,12 @@ const listItemBookmark = `<li><a href="" target="_blank" rel="noreferrer"></a></
 
 // MAIN
 
+const removeSelectedClass = () => {
+    const selected = document.querySelector('.selected');
+    if ( selected ) {
+        selected.classList.remove('selected');
+    }
+}
 const setupMainEvents = () => {
     if ( supportsTouchEvents ) {
         // Avoid double clicks in mobile. This covers tap, pencil, mouse, and keyboard in iOS.
@@ -332,7 +340,7 @@ const handleMainEvents = ( e ) => {
             getNote( dir )
                 .then( data => {
                     insertEditDialog( data.content, dir, id, title, data.lastModified );
-                    document.querySelector('.selected').classList.remove('selected');
+                    removeSelectedClass();
                 })
                 .catch( error => {
                     console.error( 'getNote', { error } );
