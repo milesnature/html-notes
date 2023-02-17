@@ -92,6 +92,7 @@ const handleDocumentEvents = ( e ) => {
     if ( key === "Escape" ) {
         e.preventDefault();
         removeDialog();
+        removeSelectedClass();
     }
 };
 const setupDocumentEvents = () => {
