@@ -5,21 +5,24 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 /**
  * @throws Exception
  */
-function getNote( $f ) {
+function getNote( $f ): void
+{
     if( file_exists( $f ) === false ) {
-        throw new Exception( "File does not exist." );
+        http_response_code(404);
+        throw new Exception( 'File does not exist.' );
     } elseif ( is_readable( $f ) === false ) {
-        throw new Exception( "Cannot read file." );
+        http_response_code(415);
+        throw new Exception( 'Cannot read file.' );
     } else {
         if ( filesize( $f ) > 0 ) {
-            $myFile = fopen( $f, "r" ) or die( "Unable to open file!" );
+            $myFile = fopen( $f, 'r' ) or die ( 'Unable to open file!' );
             $content = fread( $myFile, filesize( $f ) );
-            $lastUpdated = date("m.d.y H:i:s", filemtime( $f ) );
-            $data = array( "content" => $content, "lastUpdated" => $lastUpdated );
+            $lastUpdated = date('m.d.y H:i:s', filemtime( $f ) );
+            $data = array( 'content' => $content, 'lastUpdated' => $lastUpdated );
             fclose( $myFile );
             echo json_encode( $data );
         } else {
-            echo json_encode( array("content" => "", "lastUpdated" => "") );
+            echo json_encode( array('content' => '', 'lastUpdated' => '') );
         }
     }
 }
@@ -31,10 +34,23 @@ switch ( $requestMethod ) {
         $url = '../../'.$_GET['url'];
         try {
             getNote( $url );
+            echo json_encode( array(
+                'code'    => 200,
+                'data'    => '',
+                'message' => 'Successful'
+            ));
         } catch ( Exception $e ) {
-            echo "Exception = ".$e." URL = ".$url.".";
+            echo json_encode( array(
+                'code'    => 500,
+                'data'    => $e,
+                'message' => 'Exception'
+            ));
         }
         break;
     default:
-        echo "Request method unknown.";
+        echo json_encode( array(
+            'code'    => 405,
+            'data'    => '',
+            'message' => 'Method not allowed.'
+        ));
 }
