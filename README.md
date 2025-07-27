@@ -27,7 +27,7 @@ https://example.html-notes.app/
 
 
 ### Cons
-* Basic knowledge of HTML andCSS is required.
+* Basic knowledge of HTML and CSS is required.
 * A fair amount of traditional front-end web development knowledge is required to set up. Afterwards, the maintenance is trivial and updating notes can be done from the browser.
 * Adding new sections and files is still a manual process.
 * You must completely trust whoever has access to this site! It would be a _security nightmare_ otherwise.
