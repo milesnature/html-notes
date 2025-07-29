@@ -27,7 +27,7 @@ https://example.html-notes.app/
 
 
 ### Cons
-* Basic knowledge of HTML, CSS, and JSON is required.
+* Basic knowledge of HTML and CSS is required.
 * A fair amount of traditional front-end web development knowledge is required to set up. Afterwards, the maintenance is trivial and updating notes can be done from the browser.
 * Adding new sections and files is still a manual process.
 * You must completely trust whoever has access to this site! It would be a _security nightmare_ otherwise.
@@ -40,7 +40,7 @@ https://example.html-notes.app/
 
 Each individual note (category) uses the following HTML structure.
 
-    <details id="aNote" class="notes__details">
+    <details id="Note" class="notes__details">
       <summary><strong>A Note</strong>
         <button title="Edit A Note" type="button"><span>Edit</span></button>
       </summary>
@@ -83,16 +83,10 @@ Highlighted code blocks will copy to clipboard on click or enter.
     const useEncryption = true;
     const isDemo = false;
     const notesDirectory = "notes/";
-    const notes = [
-        { "id" : "Groceries", "dir" : "Health/Nutrition/Groceries.html" },
-        { "id" : "Recipies",  "dir" : "Health/Nutrition/Recipies.html" },
-        { "id" : "News",      "dir" : "News.html" },
-        { "id" : "To-Do",     "dir" : "To-Do.html" }
-    ];
 
 The notes directory is scanned with PHP and returns an array from which functions.js creates a final notes object (as seen above). The container names for each category are derived from the directory names. The note titles are derived from the filenames (id). It is best to capitalize all directories and filenames to maintain an organized and readable output. (Linux does not order uppercase and lowercase alphabetically).
 
-Notes are asynchronously downloaded and dynamically constructed with javascript, using this `notes` object. The order (of this array) will determine the order on the page.
+Notes are asynchronously downloaded and dynamically constructed with javascript. The order will be alphabetical.
 
 Once the index file has loaded, the site will check for a locally stored passphrase. If one is not found, a prompt will persist until one is entered. Javascript will decrypt any encrypted sections and the site will be ready.
 
@@ -132,7 +126,6 @@ I wrote this tool for myself which means future development will be limited to m
   * File upload
 * Add encryption for images. Probably base-64. Otherwise, linking to external (encrypted) storage is a good solution.
 * Explore the PWA options that enable edits to files on local directories...
-* Scrape the notes directory to dynamically generate `notes` object.
 * Notifications for success and failure.
 * View passphrase
 * Throttle number of passphrase attempts.
